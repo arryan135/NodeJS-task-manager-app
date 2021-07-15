@@ -1,8 +1,12 @@
-const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient; // gives us access to the fucntion that allows us to perform the CRUD operations
+// MongoClient = gives us access to the function that allows us to perform the CRUD operations
+const {MongoClient, ObjectID} = require("mongodb");
 
 const connectionURL = "mongodb://127.0.0.1:27017";
 const databaseName = "task-manager";
+
+const id = new ObjectID();
+console.log(id);
+console.log(id.getTimestamp());
 
 // connect to the local server
 // args: connectionURL, object that parses that URL, async callback function that returns error and client
@@ -14,8 +18,8 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
     // insertOne is not asynchronous. Helps insert one document to db
     // db.collection("users").insertOne({
-    //     name: "Aryan",
-    //     age: "21"
+    //     name: "Jenna",
+    //     age: "22"
     // }, (error, result) => {
     //     if (error) return console.log("Unable to insert user");
 
@@ -38,24 +42,24 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
     //     console.log(result.ops);
     // });
 
-    db.collection("tasks").insertMany([
-        {
-            description: "Feed the cows",
-            completed: true
-        },
-        {
-            description: "Completed the LSA english language institute requirements",
-            completed: false
-        },
-        {
-            description: "Plan for personal website2.0",
-            completed: false
-        }
-    ], (error, result) => {
-        if (error) console.log("Unable to insert documents");
+    // db.collection("tasks").insertMany([
+    //     {
+    //         description: "Feed the cows",
+    //         completed: true
+    //     },
+    //     {
+    //         description: "Completed the LSA english language institute requirements",
+    //         completed: false
+    //     },
+    //     {
+    //         description: "Plan for personal website2.0",
+    //         completed: false
+    //     }
+    // ], (error, result) => {
+    //     if (error) console.log("Unable to insert documents");
 
-        console.log(result.ops);
-    });
+    //     console.log(result.ops);
+    // });
 }); 
 
 
