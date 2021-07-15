@@ -12,10 +12,50 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
     const db = client.db(databaseName);
 
-    db.collection("users").insertOne({
-        name: "Aryan",
-        age: "21"
-    })
+    // insertOne is not asynchronous. Helps insert one document to db
+    // db.collection("users").insertOne({
+    //     name: "Aryan",
+    //     age: "21"
+    // }, (error, result) => {
+    //     if (error) return console.log("Unable to insert user");
+
+    //     // result.ops gives the array of documents in db
+    //     console.log(result.ops);
+    // });
+
+    // db.collection("users").insertMany([
+    //     {
+    //         name: "Jen",
+    //         age: 28
+    //     },
+    //     {
+    //         name: "Gunther",
+    //         age: 27
+    //     }
+    // ], (error, result) => {
+    //     if (error) return console.log("Unable to insert document");
+
+    //     console.log(result.ops);
+    // });
+
+    db.collection("tasks").insertMany([
+        {
+            description: "Feed the cows",
+            completed: true
+        },
+        {
+            description: "Completed the LSA english language institute requirements",
+            completed: false
+        },
+        {
+            description: "Plan for personal website2.0",
+            completed: false
+        }
+    ], (error, result) => {
+        if (error) console.log("Unable to insert documents");
+
+        console.log(result.ops);
+    });
 }); 
 
 
