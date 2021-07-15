@@ -12,20 +12,32 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
     const db = client.db(databaseName);
 
-    console.log("find task by _id")
-    db.collection("tasks").findOne({ _id: new ObjectID("60f0948d7b14fa4a26d7128d") }, (error, task) => {
-        if (error) console.log("Unable to find document");
+    //update one
+    // db.collection("users").update({
+    //     _id : new ObjectID("60f0922965e6b742c617c619")
+    // }, {
+    //     $set: {
+    //         name: "Harry"
+    //     },
+    //     $inc:{
+    //         age: 11
+    //     }
+    // }).then(result => {
+    //     console.log(result)
+    // }).catch(error => {
+    //     console.log(error);
+    // });
 
-        console.log(task);
+    // update many 
+    db.collection("tasks").updateMany({}, {
+        $set: {
+            completed: true
+        }
+    }).then((result) => {
+        console.log(result);
+    }).catch((error) => {
+        console.log(error);
     });
-
-    console.log("find task by document attribute `completed`")
-    // find returns a cursor instead of having a callback
-    db.collection("tasks").find({completed: false}).toArray((error, tasks) => {
-        if (error) console.log("Unable to find document");
-
-        console.log(tasks);
-    })
 }); 
 
 
