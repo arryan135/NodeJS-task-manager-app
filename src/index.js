@@ -36,12 +36,13 @@ app.get("/users/:id", (req, res) => {
     });
 });
 
-app.get("/users", (req, res) => {
-    User.find({}).then(users => {
+app.get("/users", async (req, res) => {
+    try {
+        const users = await User.find({});
         res.send(users);
-    }).catch(error => {
+    } catch(error){
         res.status(500).send(error);
-    });
+    }
 });
 
 app.post("/tasks", (req, res) => {
