@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true,
         trim: true,
         lowercase: true,
@@ -43,9 +44,22 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({email});
+    if (!user)
+        throw new Error("Unable to login");
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch)
+        throw new Error("Unable to login");
+
+    return user;
+}
+
 // middleware is a function that runs before or after a mongoose fucntionality takes place.
 // in our case we want to run our password hashing function before a new user is saved
-// pre -> before an event; post -> after an event
+// functions available methods on `userSchema`: pre -> before an event; post -> after an event
 // the second argument should use a normal function as we need `this` and the arrow fucntion doesn't bind `this`
 userSchema.pre("save", async function(next){
     // the particular user being saved
