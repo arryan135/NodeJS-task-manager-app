@@ -59,6 +59,20 @@ userSchema.methods.generateAuthToken = async function(){
     return token;
 }
 
+// When we send objects as response (res.send()) the JS Object is stringified (JSON.stringify())
+// to convert to JSON.
+// toJSON is a special property on objects, which is called when you call JSON.stringify() on objects
+// whatever the toJSON() returns, that will be the object JSON.stringify() is called on.
+userSchema.methods.toJSON = function () {
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
+}
+
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({email});
     if (!user)
