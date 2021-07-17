@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const User = mongoose.model("User", {
+// Mongoose wraps the second object argument in a schema by itself 
+// We are doing this here explicitly
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -39,5 +41,20 @@ const User = mongoose.model("User", {
         }
     }
 });
+
+// middleware is a function that runs before or after a mongoose fucntionality takes place.
+// in our case we want to run our password hashing function before a new user is saved
+// pre -> before an event; post -> after an event
+// the second argument should use a normal function as we need `this` and the arrow fucntion doesn't bind `this`
+userSchema.pre("save", async function(next){
+    // the particular user being saved
+    const user = this;
+    
+
+    // if next is not called mongoose thinks that we are still performing an opertion 
+    next();
+})
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
