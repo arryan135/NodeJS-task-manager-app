@@ -48,6 +48,7 @@ router.patch("/users/:id", async (req, res) => {
         // to ensure that we run our middleware while updating 
         const user = await User.findById(req.params.id);
         updates.forEach(update => user[update] = req.body[update]);
+        await user.save();
 
         // mongoose way that bypasses the middleware
         // // new:true returns the new user as opposed to the existing one found before the update 

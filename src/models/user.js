@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs")
 
 // Mongoose wraps the second object argument in a schema by itself 
 // We are doing this here explicitly
@@ -49,7 +50,9 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", async function(next){
     // the particular user being saved
     const user = this;
-    
+    if (user.isModified("password")) {
+        user.password = await bcrypt.hash(user.password, 8);
+    }
 
     // if next is not called mongoose thinks that we are still performing an opertion 
     next();
