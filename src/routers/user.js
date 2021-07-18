@@ -2,6 +2,10 @@ const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
 const auth = require("../middleware/auth");
+const multer = require("multer");
+const upload = multer({
+    dest: "avatars"
+});
 
 // sign up route
 router.post("/users", async (req, res) => {
@@ -74,6 +78,10 @@ router.patch("/users/me", auth, async (req, res) => {
     } catch (error){
         res.status(500).send(error);
     }
+});
+
+router.post("/users/me/avatar", upload.single("avatar"), (req, res) => {
+    res.send();
 });
 
 router.delete("/users/me", auth, async (req, res) => {
