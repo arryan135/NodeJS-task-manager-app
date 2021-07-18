@@ -90,6 +90,15 @@ router.patch("/users/me", auth, async (req, res) => {
     }
 });
 
+router.delete("/users/me", auth, async (req, res) => {
+    try {
+        await req.user.remove();
+        res.send(req.user);
+    } catch(error){
+        res.status(500).send();
+    }
+});
+
 router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
     req.user.avatar = req.file.buffer;
     await req.user.save();
@@ -104,14 +113,19 @@ router.delete("/users/me/avatar", auth, async (req, res) => {
     res.send();
 });
 
-router.delete("/users/me", auth, async (req, res) => {
-    try {
-        await req.user.remove();
-        res.send(req.user);
-    } catch(error){
-        res.status(500).send();
+router.get("/users/:id/avatar", async (req, res) => {
+    try {   
+        const user = await User.findById(req.params.id);
+
+        if(!user || !user.avatar){
+            throw new Error();
+        }
+
+        res.set("Content-type", "image/jpg");
+        res.send(user.avatar);
+    } catch(error) {    
+        res.status(404).send();
     }
 });
-
 
 module.exports = router;
