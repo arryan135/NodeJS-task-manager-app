@@ -51,7 +51,7 @@ router.get("/users/me", auth, async (req, res) => {
     res.send(req.user);
 });
 
-router.patch("/users/:id", async (req, res) => {
+router.patch("/users/me", auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ["name", "email", "password", "age"];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
@@ -62,7 +62,7 @@ router.patch("/users/:id", async (req, res) => {
 
     try {
         // to ensure that we run our middleware while updating 
-        const user = await User.findById(req.params.id);
+        const user = req.user;
         updates.forEach(update => user[update] = req.body[update]);
         await user.save();
 
@@ -70,9 +70,6 @@ router.patch("/users/:id", async (req, res) => {
         // // new:true returns the new user as opposed to the existing one found before the update 
         // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         // no user with the given id
-        if (!user){
-            return res.status(404).send();
-        }
         res.send(user);
     } catch (error){
         res.status(500).send(error);
