@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Task = require("./task")
 
 // Mongoose wraps the second object argument in a schema by itself 
 // We are doing this here explicitly
@@ -106,7 +107,15 @@ userSchema.pre("save", async function(next){
 
     // if next is not called mongoose thinks that we are still performing an opertion 
     next();
-})
+});
+
+// Middleware to Delete user tasks when the user is removed
+userSchema.pre("remove", async function(next){
+    const user = this;
+    await Task.deleteMany({owner: user._id});
+    next();
+});
+
 
 const User = mongoose.model("User", userSchema);
 
