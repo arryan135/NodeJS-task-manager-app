@@ -4,7 +4,6 @@ const router = new express.Router();
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const upload = multer({
-    dest: "avatars",
     limits: {
         fileSize: 1000000
     },
@@ -91,7 +90,9 @@ router.patch("/users/me", auth, async (req, res) => {
     }
 });
 
-router.post("/users/me/avatar", upload.single("avatar"), (req, res) => {
+router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
     res.send();
 }, (error, req, res, next) => {
     res.status(404).send({error: error.message});
