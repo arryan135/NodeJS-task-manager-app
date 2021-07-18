@@ -93,6 +93,8 @@ router.patch("/users/me", auth, async (req, res) => {
 
 router.post("/users/me/avatar", upload.single("avatar"), (req, res) => {
     res.send();
+}, (error, req, res, next) => {
+    res.status(404).send({error: error.message});
 });
 
 router.delete("/users/me", auth, async (req, res) => {
