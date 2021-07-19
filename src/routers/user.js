@@ -4,6 +4,8 @@ const User = require("../models/user");
 const router = new express.Router();
 const auth = require("../middleware/auth");
 const multer = require("multer");
+const {sendWelcomeEmail, sendGoodByeEmail} = require("../emails/account");
+
 const upload = multer({
     limits: {
         fileSize: 1000000
@@ -24,6 +26,7 @@ router.post("/users", async (req, res) => {
 
     try {
         await user.save();
+        sendWelcomeEmail(user.email, user.name) // send welcome email
         const token = await user.generateAuthToken();
         res.status(201).send({user, token});
     } catch(error){
