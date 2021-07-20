@@ -69,3 +69,18 @@ test("Should not get profile for unauthenticated user", async () => {
         .expect(401);
         // did not set authentication header so the auth middleware will not know if user is authenticated
 });
+
+test("Should delete account for user", async () => {
+    await request(app)
+        .delete("/users/me")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200);
+});
+
+test("Should not delete account for unauthenticated user", async () => {
+    await request(app)
+        .delete("/users/me")
+        .send()
+        .expect(401)
+});
