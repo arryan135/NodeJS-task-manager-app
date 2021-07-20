@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const app = require("../src/app");
 const User = require("../src/models/user");
+const { response } = require("express");
 
 const userOneId = new mongoose.Types.ObjectId();
 
@@ -52,13 +53,20 @@ test("Should sign up a new user", async () => {
 });
 
 test("Should login existing user", async () => {
-    await request(app)
+    // the user we are trying to log in already exists in the db
+    // So when we log in again the `generateAuthToken()` user model method adds a new token to the token object
+    const response = await request(app)
         .post("/users/login")
         .send({
             email: userOne.email,
             password: userOne.password
         })
         .expect(200);
+
+    const user = await User.findById(userOneId);
+
+    // Assert that token in response matches users second token
+    expect(response.body.token).toBe(user.tokens[1].token);
 });
 
 test("Should not login non-existant user", async () => {
