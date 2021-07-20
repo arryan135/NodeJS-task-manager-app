@@ -1,28 +1,10 @@
 const request = require("supertest");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const app = require("../src/app");
 const User = require("../src/models/user");
-const { response } = require("express");
-
-const userOneId = new mongoose.Types.ObjectId();
-
-// could be used later for test cases for login, etc
-const userOne = {
-    _id: userOneId,
-    name: "Arryan Malik",
-    email: "arryanmalik135@gmail.com",
-    password: "thisisthecoolestpass",
-    tokens:[{
-        token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET)
-    }]
-}
+const {userOneId, userOne, setupDatabase} = require("./fixtures/db");
 
 // this function run before each test case in this test suite
-beforeEach(async () => {
-    await User.deleteMany();
-    await new User(userOne).save();
-});
+beforeEach(setupDatabase);
 
 test("Should sign up a new user", async () => {
     const response = await request(app)
