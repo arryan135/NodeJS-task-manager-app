@@ -24,14 +24,31 @@ beforeEach(async () => {
 });
 
 test("Should sign up a new user", async () => {
-    await request(app)
+    const response = await request(app)
         .post("/users")
         .send({
             name: "Arryan",
             email: "arryan@umich.edu",
             password: "thisisagoodpass"
         })
-        .expect(201)
+        .expect(201);
+
+        // Assert that the database was changed correctly
+        const user = await User.findById(response.body.user._id);
+        expect(user).not.toBeNull(); // -> tests that this user exists in db
+
+        // Assertions about the response
+        expect(response.body).toMatchObject({
+            user: {
+                name: "Arryan",
+                email: "arryan@umich.edu"
+            },
+            token: user.tokens[0].token
+        });
+
+        // Assestion that the password is not stored as plain text password
+        expect(user.password).not.toBe("thisisagoodpass");
+        
 });
 
 test("Should login existing user", async () => {
